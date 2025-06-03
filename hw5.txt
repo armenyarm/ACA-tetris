@@ -1,0 +1,96 @@
+
+ - Board Abstraction
+   The board represents the state of a tetris board. Its most obvious feature is the "grid" – a 2-d array of
+   Spot objects that stores which spots are filled. 
+   The lower left-corner is (0,0) with X increasing to the right and Y increasing upwards.
+
+
+ - Widths and Heights
+   The secondary "widths" and "heights" structures make many operations more efficient. 
+   The widths array stores how many filled spots there are in each row.
+   This allows the clearRows() operation to know when a row is full.
+   The heights array stores the max height to which each column has been filled.
+   The height will be the index of the open spot which is just above the top filled spot in that column.
+   The heights array allows the dropHeight() operation to compute efficiently where a 
+   piece will come to rest when dropped in a particular column.
+
+
+ - Constructor
+  The constructor initializes a new empty board.
+  all spots are empty when initialized
+  widths and heights arrays should be also initialized
+  
+  
+ - int getMaxHeight()
+   this method returns the max filled height of the board
+
+ - int getColumnHeight(int x)
+   returns the height at specified column
+
+ - int getRowWidth(int y)
+   returns the number of filled spots at specified row
+   
+ - boolean isFilled(int x, int y)
+   returns true/false if specified spot is filled or not
+
+ - public void place(Piece piece, int x, int y)
+   
+   Place() takes a piece, and an (x,y), and sets the piece into the grid with its origin at the given location in the board.  
+   you should map the origin (0,0) of piece to x,y at board. then fill the related spots.
+   
+   if the piece doesn't fit in the board, if any part of the piece located out of board's border, should throw OutOfBoundPlaceException.
+  
+   if the piece overlaps with already filled spots, should throw BadPlaceExceptions.
+
+   both of these exceptions are un-checked exception.
+
+   all the validation and throwing exceptions should happen before filling any spot, 
+   so that the board will no be in a invalid state.
+
+   after placing the piece successfully on the board, you should update the heights and widths arrays. 
+
+ - there is a toString() provided for debuging, provides lots of useful information about the board.
+
+ - undo() and commit() methods work together.
+   these methods are used for animation, piece movement in the board.
+   JTetris, the main game application, calls the following board methods for animating peice movement
+   for example:
+   place()
+   undo() 
+   place()
+   undo() 
+   place()
+   undo() 
+   commit()	 
+  
+   undo(): this method undo all filled and not committed spots
+           widths and heights arrays should be updated also
+ 
+   commit(): this method commit all filled and not committed spots
+
+ - int dropHeight(piece, x)
+   DropHeight() computes the y value where the origin (0,0) of a piece will come to rest if the piece is
+   dropped straight down with its origin at the given x from infinitely high. DropHeight() should use the
+   heights array and the skirt of the piece to compute the y value. look at the piece skirt and the board heights
+   to compute the y where the origin of the piece will come to rest.
+   DropHeight() assumes the piece falls straight down from above the board.
+
+ - int clearRows() 
+   Delete each row that is filled all the way across, causing things above to shift down, and returns a count of
+   the number of rows deleted. New rows shifted in at the top of the board should be empty. There may be
+   multiple filled rows, and they may not be adjacent.
+   This is a complicated little coding problem. Make a drawing to chart out your strategy.
+   every row above a deleted row moves down exactly one row.
+   implementation hint: 
+   the "To" row is the row you are copying down to. The "To" row starts at the bottom filled row and proceeds up one row at a
+   time. The "From" row is the row you are copying from. The "From" row starts one row above the "To" row and goes up one row at a time,
+   except it skips over filled rows on its way up.
+
+   Since you know the maximum filled height of all the columns, you can avoid needless copying of empty
+   space at the top of the board. This is a good optimization, since very often in tetris, the board is mostly
+   empty.
+
+ - boolean hasFilledRows()
+   returns true if the baord has any filled rows.
+
+
